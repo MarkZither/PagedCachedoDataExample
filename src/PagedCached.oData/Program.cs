@@ -1,8 +1,11 @@
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.OData;
 using Microsoft.Identity.Web;
 using Microsoft.Identity.Abstractions;
 using Microsoft.Identity.Web.Resource;
+using Microsoft.OData.Edm;
+using Microsoft.OData.ModelBuilder;
 
 namespace PagedCached.oData;
 
@@ -16,7 +19,17 @@ public class Program
         builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             .AddMicrosoftIdentityWebApi(builder.Configuration.GetSection("AzureAd"));
 
-        builder.Services.AddControllers();
+        //IEdmModel model0 = EdmModelBuilder.GetEdmModel();
+
+        builder.Services.AddControllers().AddOData(opt => opt.Count().Filter().Expand().Select().OrderBy().SetMaxTop(5)
+            .AddRouteComponents("odata", GetEdmModel())
+            //.AddRouteComponents(model0)
+            //.AddRouteComponents("v1", model1)
+            //.AddRouteComponents("v2{data}", model2, services => services.AddSingleton<ODataBatchHandler, DefaultODataBatchHandler>())
+            //.AddRouteComponents("v3", model3)
+            //.Conventions.Add(new MyConvention())
+        );
+
         // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen();
@@ -30,6 +43,18 @@ public class Program
             app.UseSwaggerUI();
         }
 
+        // Use odata route debug, /$odata
+        app.UseODataRouteDebug();
+
+        // If you want to use /$openapi, enable the middleware.
+        //app.UseODataOpenApi();
+
+        // Add OData /$query middleware
+        app.UseODataQueryRequest();
+
+        // Add the OData Batch middleware to support OData $Batch
+        app.UseODataBatching();
+
         app.UseHttpsRedirection();
 
         app.UseAuthorization();
@@ -38,5 +63,13 @@ public class Program
         app.MapControllers();
 
         app.Run();
+    }
+
+    static IEdmModel GetEdmModel()
+    {
+        var odataBuilder = new ODataConventionModelBuilder();
+
+        odataBuilder.EntitySet<WeatherForecast>(nameof(WeatherForecast));
+        return odataBuilder.GetEdmModel();
     }
 }

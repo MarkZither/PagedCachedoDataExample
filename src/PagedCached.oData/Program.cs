@@ -21,8 +21,8 @@ public class Program
 
         //IEdmModel model0 = EdmModelBuilder.GetEdmModel();
 
-        builder.Services.AddControllers().AddOData(opt => opt.Count().Filter().Expand().Select().OrderBy().SetMaxTop(5)
-            .AddRouteComponents("odata", GetEdmModel())
+        builder.Services.AddControllers().AddOData(opt => opt.Count().Filter().Expand().Select().OrderBy().SkipToken().SetMaxTop(5)
+            .AddRouteComponents("odata", GetEdmModel()).SkipToken()
             //.AddRouteComponents(model0)
             //.AddRouteComponents("v1", model1)
             //.AddRouteComponents("v2{data}", model2, services => services.AddSingleton<ODataBatchHandler, DefaultODataBatchHandler>())

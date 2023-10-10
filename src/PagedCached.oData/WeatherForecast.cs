@@ -1,8 +1,10 @@
+using System.ComponentModel.DataAnnotations;
+
 namespace PagedCached.oData;
 
 public class WeatherForecast
 {
-    //[Key]
+    [Key]
     // don't need key attribute if the column is Id
     public int Id {get;set;}
     public DateOnly Date { get; set; }

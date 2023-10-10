@@ -9,7 +9,7 @@ namespace PagedCached.oData.Controllers;
 [ApiController]
 [Route("[controller]")]
 [RequiredScope(RequiredScopesConfigurationKey = "AzureAd:Scopes")]
-public class oDataWeatherForecastController : ODataController
+public class oDataWeatherForecastController : ControllerBase
 {
     private static readonly string[] Summaries = new[]
     {
@@ -27,8 +27,9 @@ public class oDataWeatherForecastController : ODataController
     [HttpGet(Name = "GetoDataWeatherForecast")]
     public IEnumerable<oDataWeatherForecast> Get()
     {
-        return Enumerable.Range(1, 50).Select(index => new oDataWeatherForecast
+        return Enumerable.Range(1, 1_000_000).Select(index => new oDataWeatherForecast
         {
+            Id = index,
             Date = DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
             TemperatureC = Random.Shared.Next(-20, 55),
             Summary = Summaries[Random.Shared.Next(Summaries.Length)]

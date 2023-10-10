@@ -68,8 +68,11 @@ public class Program
     static IEdmModel GetEdmModel()
     {
         var odataBuilder = new ODataConventionModelBuilder();
-
+        var weatherForecast = odataBuilder.EntityType<WeatherForecast>().HasKey(c => c.Id);
+        var oDataWeatherForecast = odataBuilder.EntityType<oDataWeatherForecast>().HasKey(c => c.Id);
+            
         odataBuilder.EntitySet<WeatherForecast>(nameof(WeatherForecast));
+        odataBuilder.EntitySet<oDataWeatherForecast>(nameof(oDataWeatherForecast));
         return odataBuilder.GetEdmModel();
     }
 }

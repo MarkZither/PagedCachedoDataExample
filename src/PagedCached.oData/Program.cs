@@ -6,6 +6,7 @@ using Microsoft.Identity.Abstractions;
 using Microsoft.Identity.Web.Resource;
 using Microsoft.OData.Edm;
 using Microsoft.OData.ModelBuilder;
+using LazyCache;
 
 namespace PagedCached.oData;
 
@@ -33,6 +34,9 @@ public class Program
         // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen();
+
+        // Register IAppCache as a singleton CachingService
+        builder.Services.AddLazyCache();
 
         var app = builder.Build();
 

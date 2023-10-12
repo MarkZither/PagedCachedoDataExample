@@ -32,13 +32,14 @@ public class oDataWeatherForecastController : ControllerBase
     {
         Func<IEnumerable<oDataWeatherForecast>> actionThatWeWantToCache = () => GetForecasts();
 
-        var cachedDatabaseTime = _cache.GetOrAdd(cacheKey, actionThatWeWantToCache);   
+        var cachedDatabaseTime = _cache.GetOrAdd(cacheKey, actionThatWeWantToCache, new TimeSpan(0, 0, 10));   
         
         return cachedDatabaseTime;
     }
 
     private IEnumerable<oDataWeatherForecast> GetForecasts()
     {
+        _logger.LogWarning("Fetched the data again");
         return Enumerable.Range(1, 1_000_000).Select(index => new oDataWeatherForecast
                 {
                     Id = index,
